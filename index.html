@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Rock-Paper-Scissors</title>
+
+</head>
+
+<body>
+
+    <script>
+        function computerPlay(){
+            const choice = ["rock","paper","scissor"]; 
+            return choice[ Math.floor(Math.random() * choice.length) ] ; 
+
+        }
+
+        function playRound(playerChoice,computerChoice){
+            playerChoice = playerChoice.toLowerCase(); 
+
+            return evalWinner(playerChoice,computerChoice);
+        }
+
+        function evalWinner(playerChoice,computerChoice){
+
+            let result; 
+            if(playerChoice === computerChoice){
+                result = "tied"
+            }else{
+                switch(playerChoice){
+                    case "rock":
+                        result = (computerChoice === "scissor") ? "win" : "lose";
+                        break;
+
+                    case "paper":
+                        result = (computerChoice === "rock") ? "win" : "lose";
+                        break;
+
+                    case "scissor":
+                        result = (computerChoice === "paper") ? "win" : "lose";
+                        break;
+
+                }
+            }
+
+            return result;
+        }
+
+        function game(){
+
+            let playerScore, computerScore, playerChoice, computerChoice; 
+            playerScore = computerScore = 0; 
+            
+        
+            for(let i = 0 ; i < 5 ; i++){
+                playerChoice = prompt("Please enter your of \"rock\" \"paper\" or \"scissor\""); 
+                computerChoice = computerPlay();
+                let result = playRound(playerChoice,computerChoice);
+                let message; 
+                switch(result){
+                    case "win": 
+                        message = `You Win! ${playerChoice} beats ${computerChoice}`; 
+                        playerScore++;
+                        break;
+                    case "lose":
+                        message = `You Lose! ${computerChoice} beats ${playerChoice}`; 
+                        computerScore++; 
+                        break;
+                    case "tied":
+                        message = `You Tied! the computer also chose ${playerChoice}`; 
+                        break;
+                }
+
+                console.log(message);
+
+            }
+            let finalMessage; 
+            if( playerScore === computerScore){
+               finalMessage = "The ultimate game is tied!"; 
+            }else if ( playerScore > computerScore){
+                finalMessage = `You win! ${playerScore} to ${computerScore}`; 
+            }
+            else{
+                finalMessage = `You Lose, the computer won ${computerScore} to ${playerScore}`; 
+            }
+            
+            console.log(finalMessage);
+        }
+
+    </script>
+</body>
+
+</html>
