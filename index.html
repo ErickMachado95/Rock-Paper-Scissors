@@ -1,94 +1,188 @@
 <!DOCTYPE html>
 <html>
-
+  
 <head>
   <meta charset="utf-8">
   <title>Rock-Paper-Scissors</title>
 
+  <style> 
+    html{
+        height: 100%;
+    }
+    body{
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background-color: lightcoral;
+    }
+
+    #scoring-div{
+        margin: 100px;
+        display:flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .scoring-info{
+        display: flex;
+        align-items: center;;
+        margin: 0 10px 0px 10px;
+        padding: 10px;
+        background-color: lightblue;
+        font-size: 50px;
+    }
+
+    .score-image{
+        display: block;
+        width: 100px;
+        height: auto;
+        border-radius: 15%;
+    }
+
+    #log{
+        font-size: 50px; 
+    }
+    
+    #button-container{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        justify-self: center;
+        align-self: center;
+        margin: 0 auto; 
+    } 
+
+    .button{
+        padding: 10px;
+        margin-right: 10px;
+        margin-left: 10px;
+        height: 100px;
+        width: 250px;
+        font-size: 50px;
+        border: solid;
+    }
+
+    .button:hover{
+        scale: 1.1;
+    }
+
+  </style>
+
+
 </head>
 
 <body>
-
-    <script>
-        function computerPlay(){
-            const choice = ["rock","paper","scissor"]; 
-            return choice[ Math.floor(Math.random() * choice.length) ] ; 
-
-        }
-
-        function playRound(playerChoice,computerChoice){
-            playerChoice = playerChoice.toLowerCase(); 
-
-            return evalWinner(playerChoice,computerChoice);
-        }
-
-        function evalWinner(playerChoice,computerChoice){
-
-            let result; 
-            if(playerChoice === computerChoice){
-                result = "tied"
-            }else{
-                switch(playerChoice){
-                    case "rock":
-                        result = (computerChoice === "scissor") ? "win" : "lose";
-                        break;
-
-                    case "paper":
-                        result = (computerChoice === "rock") ? "win" : "lose";
-                        break;
-
-                    case "scissor":
-                        result = (computerChoice === "paper") ? "win" : "lose";
-                        break;
-
-                }
-            }
-
-            return result;
-        }
-
-        function game(){
-
-            let playerScore, computerScore, playerChoice, computerChoice; 
-            playerScore = computerScore = 0; 
-            
-        
-            for(let i = 0 ; i < 5 ; i++){
-                playerChoice = prompt("Please enter your of \"rock\" \"paper\" or \"scissor\""); 
-                computerChoice = computerPlay();
-                let result = playRound(playerChoice,computerChoice);
-                let message; 
-                switch(result){
-                    case "win": 
-                        message = `You Win! ${playerChoice} beats ${computerChoice}`; 
-                        playerScore++;
-                        break;
-                    case "lose":
-                        message = `You Lose! ${computerChoice} beats ${playerChoice}`; 
-                        computerScore++; 
-                        break;
-                    case "tied":
-                        message = `You Tied! the computer also chose ${playerChoice}`; 
-                        break;
-                }
-
-                console.log(message);
-
-            }
-            let finalMessage; 
-            if( playerScore === computerScore){
-               finalMessage = "The ultimate game is tied!"; 
-            }else if ( playerScore > computerScore){
-                finalMessage = `You win! ${playerScore} to ${computerScore}`; 
-            }
-            else{
-                finalMessage = `You Lose, the computer won ${computerScore} to ${playerScore}`; 
-            }
-            
-            console.log(finalMessage);
-        }
-
-    </script>
+    <div id='scoring-div'>
+        <div class='scoring-info'><img class='score-image' src='https://dodo.ac/np/images/thumb/f/fe/Boy_1_NH.png/200px-Boy_1_NH.png'>
+            Player Score is: <span id='player-score'>0</span>
+        </div>
+        <div class='scoring-info'><img class='score-image' src='https://cdn.psychologytoday.com/sites/default/files/styles/image-article_inline_full/public/field_blog_entry_teaser_image/2017-12/13539934212140.png?itok=6K8do00f'>
+            Computer Score is: <span id='computer-score'>0</span>
+        </div>
+    </div>
+    <div id='log'>
+    </div>
+    <div id="button-container"> 
+      <button data-element='rock' style='color: red'>Rock</button>
+      <button data-element='paper' style='color: green'>Paper</button>
+      <button data-element='scissor' style='color: blue;'>Scissor</button>
+    </div>
+   
+ 
 </body>
+
+
+<script>
+    const buttons = document.querySelectorAll('button');
+    buttons.forEach((button) => button.classList.add('button'));
+    buttons.forEach((button) => button.addEventListener('click',
+        (e) => {
+            
+            let computerChoice = computerPlay(); 
+            let playerChoice = e.target.dataset.element;
+            playRound(playerChoice,computerChoice);
+            checkEndGame();
+        }
+    ))
+    function computerPlay(){
+        const choice = ["rock","paper","scissor"]; 
+        return choice[ Math.floor(Math.random() * choice.length) ] ; 
+
+    }
+
+    function playRound(playerChoice,computerChoice){
+        const cons = document.querySelector("#log")
+        const result = evalWinner(playerChoice,computerChoice);
+        let score;
+        switch(result){
+            case "win":
+                cons.textContent = "You won this round!"; 
+                let playerScore = document.querySelector("#player-score");
+                score = parseInt(playerScore.textContent); 
+                score++; 
+                playerScore.textContent = score.toString();
+                break;
+            case "lose":
+                cons.textContent = "You lost this round!";
+                let computerScore = document.querySelector("#computer-score");
+                score = parseInt(computerScore.textContent); 
+                score++; 
+                computerScore.textContent = score.toString();
+                break;
+            default:
+                cons.textContent = "This round is tied"; 
+        }
+    }
+
+    function evalWinner(playerChoice,computerChoice){
+
+        let result; 
+        if(playerChoice === computerChoice){
+            result = "tied"
+        }else{
+            switch(playerChoice){
+                case "rock":
+                    result = (computerChoice === "scissor") ? "win" : "lose";
+                    break;
+
+                case "paper":
+                    result = (computerChoice === "rock") ? "win" : "lose";
+                    break;
+
+                case "scissor":
+                    result = (computerChoice === "paper") ? "win" : "lose";
+                    break;
+
+            }
+        }
+
+        return result;
+    }
+
+    function checkEndGame(){
+        const compInfo = document.querySelector("#computer-score"); 
+        const playInfo = document.querySelector("#player-score"); 
+
+        let compScore = parseInt(compInfo.textContent); 
+        let playScore = parseInt(playInfo.textContent);
+        
+        if(playScore >= 5 || compScore >= 5){
+           let winner = playScore > compScore ? "player" : "computer"; 
+           if (window.confirm(`Game Over ${winner} won, press Ok to play again`)){
+                playInfo.textContent = "0"; 
+                compInfo.textContent = "0"; 
+                const logText = document.querySelector("#log"); 
+                logText.textContent = ""; 
+           }else{
+                const msg = document.querySelector('#log'); 
+                msg.textContent = "Cya next time!"; 
+           }
+        }
+    }
+
+       
+    </script>
 
 </html>
